@@ -6,7 +6,11 @@ import (
 	"os"
 
 	"github.com/alcortesm/git-diff-tree-benchmarks/gogit"
+	"github.com/alcortesm/git-diff-tree-benchmarks/libgit2"
+	"github.com/alcortesm/git-diff-tree-benchmarks/result"
 )
+
+type benchmark func(string) (*result.Result, error)
 
 func main() {
 	url, help, err := parseArgs()
@@ -21,15 +25,22 @@ func main() {
 		os.Exit(0)
 	}
 
-	result, err := gogit.Benchmark(url)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	implementations := map[string]benchmark{
+		"go-git":  gogit.Benchmark,
+		"libgit2": libgit2.Benchmark,
 	}
 
-	if err := result.Report("go-git.dat"); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	for name, benchmark := range implementations {
+		result, err := benchmark(url)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		if err := result.Report(name + ".dat"); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
 	}
 }
 

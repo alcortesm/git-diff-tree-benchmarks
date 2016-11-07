@@ -12,7 +12,7 @@ import (
 // A duration value tell you how much did it took to calculate the
 // diff-tree of two commits, their hashes, and the number of files of
 // the one with more files.
-type Duration struct {
+type Sample struct {
 	HashOld  core.Hash
 	HashNew  core.Hash
 	NFiles   int
@@ -23,7 +23,7 @@ type Duration struct {
 type Result struct {
 	URL  string
 	When time.Time
-	Data []*Duration
+	Data []*Sample
 }
 
 func (l Result) Report(fileName string) error {

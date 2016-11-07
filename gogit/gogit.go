@@ -43,13 +43,13 @@ func downloadRepository(url string) (*git.Repository, error) {
 	return r, nil
 }
 
-func benchmarkAllCommits(r *git.Repository) ([]*result.Duration, error) {
+func benchmarkAllCommits(r *git.Repository) ([]*result.Sample, error) {
 	commits, err := flatHistory(r)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]*result.Duration, 0, len(commits)-1)
+	ret := make([]*result.Sample, 0, len(commits)-1)
 
 	var parent *git.Commit
 	for _, c := range commits {
@@ -123,7 +123,7 @@ func getFirstParent(c *git.Commit) (*git.Commit, bool) {
 
 // measures the time to compare the trees of two commits.
 // if the old commit is nil, the new is compared against an empty tree.
-func benchmarkDiffTree(o, n *git.Commit) (*result.Duration, error) {
+func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
 	var ot *git.Tree
 	var err error
 	if o != nil {
@@ -161,7 +161,7 @@ func benchmarkDiffTree(o, n *git.Commit) (*result.Duration, error) {
 		return nil, err
 	}
 
-	return &result.Duration{
+	return &result.Sample{
 		HashOld:  hashOld,
 		HashNew:  n.Hash,
 		NChanges: len(changes),
