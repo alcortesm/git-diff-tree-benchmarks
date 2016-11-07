@@ -1,0 +1,58 @@
+package result
+
+import (
+	"fmt"
+	"io"
+	"os"
+	"time"
+
+	"gopkg.in/src-d/go-git.v4/core"
+)
+
+// A duration value tell you how much did it took to calculate the
+// diff-tree of two commits, their hashes, and the number of files of
+// the one with more files.
+type Duration struct {
+	HashOld  core.Hash
+	HashNew  core.Hash
+	NFiles   int
+	NChanges int
+	Duration time.Duration
+}
+
+type Result []*Duration
+
+func (l Result) Report(fileName string) error {
+	f, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		errClose := f.Close()
+		if err == nil {
+			err = errClose
+		}
+	}()
+
+	l.report(f)
+
+	return nil
+}
+
+func (l Result) report(w io.Writer) {
+	fmt.Fprintln(w, "# Fields:")
+	fmt.Fprintln(w, "# 1. hash of the old commit")
+	fmt.Fprintln(w, "# 2. hash of the new commit")
+	fmt.Fprintln(w, "# 3. number of files changed between both commits")
+	fmt.Fprintln(w, "# 4. number of files in the commit with more files")
+	fmt.Fprintln(w, "# 5. duration of the diff tree operation in nanoseconds (time to find what files were added, deleted or modified")
+
+	for _, d := range l {
+		fmt.Fprintf(w, "%s %s %9d %9d %14d\n",
+			d.HashOld,
+			d.HashNew,
+			d.NFiles,
+			d.NChanges,
+			d.Duration.Nanoseconds())
+	}
+}
