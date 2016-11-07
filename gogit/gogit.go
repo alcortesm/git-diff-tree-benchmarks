@@ -12,14 +12,21 @@ import (
 	"gopkg.in/src-d/go-git.v4/core"
 )
 
-func Benchmark(url string) (result.Result, error) {
+func Benchmark(url string) (*result.Result, error) {
 	r, err := downloadRepository(url)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
-	return benchmarkAllCommits(r)
+	ret := &result.Result{
+		URL:  url,
+		When: time.Now(),
+	}
+
+	ret.Data, err = benchmarkAllCommits(r)
+
+	return ret, err
 }
 
 func downloadRepository(url string) (*git.Repository, error) {
@@ -36,13 +43,14 @@ func downloadRepository(url string) (*git.Repository, error) {
 	return r, nil
 }
 
-func benchmarkAllCommits(r *git.Repository) (result.Result, error) {
+func benchmarkAllCommits(r *git.Repository) ([]*result.Duration, error) {
 	commits, err := flatHistory(r)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make(result.Result, 0)
+	ret := make([]*result.Duration, 0, len(commits)-1)
+
 	var parent *git.Commit
 	for _, c := range commits {
 		d, err := benchmarkDiffTree(parent, c)
