@@ -71,6 +71,10 @@ go-git.dat  libgit2.dat
 diff-tree-benchmark.png: PNG image data, 1500 x 900, 8-bit colormap, non-interlaced
 ```
 
+The result should be something like this:
+
+![gnuplot grpah](https://cloud.githubusercontent.com/assets/9169414/20107515/14759272-a5d9-11e6-92bd-3f64a6e22ea3.png)
+
 # Gotchas
 
 This program depends on a working libgit2 installation, version 0.24.3 and
