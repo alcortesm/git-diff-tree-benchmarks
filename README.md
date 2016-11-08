@@ -47,7 +47,7 @@ Download and install
 
 ```
 ; go get git@github.com:alcortesm/git-diff-tree-benchmarks.git
-; pushd $GOPATH/src/alcortesm/git-diff-tree-benchmarks; go install; popd
+; go install github.com/alcortesm/git-diff-tree-benchmarks
 ```
 
 Benchmarks using data from the go-git repository (for example).
@@ -63,6 +63,14 @@ go-git.dat  libgit2.dat
 ; file diff-tree-benchmark.png
 diff-tree-benchmark.png: PNG image data, 1500 x 900, 8-bit colormap, non-interlaced
 ```
+
+# Gotchas
+
+This program depends on a working libgit2 installation, version 0.24.3 and
+its the corresponding git2go (version 24).
+
+When downloading repositories via SSH this programs relies on an already running
+SSH-agent.
 
 # Contact Information
 
