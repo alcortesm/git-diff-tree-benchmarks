@@ -16,13 +16,12 @@ The benchmark is performed as follows:
 3. Generate a report with the following format:
 
   ```
-  # Fields:
+  # Fields (separated by one or more spaces):
   # 1. hash of the old commit
   # 2. hash of the new commit
   # 3. number of files changed between both commits
   # 4. number of files in the commit with more files
-  # 5. duration of the diff tree operation in nanoseconds (time to find what
-  files were added, deleted or modified
+  # 5. duration of the diff tree operation in nanoseconds (time to find what files were added, deleted or modified)
   #
   # repository URL = git@github.com:alcortesm/git-diff-tree-benchmarks.git
   # date = 2016-11-08 10:58:39.362789734 +0100 CET
