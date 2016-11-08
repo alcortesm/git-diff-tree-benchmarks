@@ -71,9 +71,9 @@ diff-tree-benchmark.png: PNG image data, 1500 x 900, 8-bit colormap, non-interla
 # Gotchas
 
 This program depends on a working libgit2 installation, version 0.24.3 and
-its the corresponding git2go (version 24).
+its corresponding git2go (version 24).
 
-When downloading repositories via SSH this programs relies on an already running
+When downloading repositories via SSH this program expects an already running
 SSH-agent.
 
 # Contact Information
