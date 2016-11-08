@@ -33,7 +33,7 @@ fit f2(x) 'libgit2.dat' using 4:($5/1000000) via a2, b2
 set title sprintf("Time to calculate what files have changed between two commits\nversus the number of files in the commit with more files.\n\nRepository URL =%s\nDate =%s\n\ngo-git slope = %f (milliseconds/file)\nlibgit2 slope = %f (milliseconds/file)\n\n(The linear regression was made using the nonlinear least-squares (NLLS) Marquardt-Levenberg algorithm)\n", url, date, a1, a2) font ",11"
 
 plot \
-    'go-git.dat' using ($4):($5/1000000) title "go-git v4" with points lt 1 pt 6 ps 2, \
+    'go-git.dat' using ($3):($5/1000000) title "go-git v4" with points lt 1 pt 6 ps 2, \
     f1(x) notitle lt 1 lw 3, \
-    'libgit2.dat' using ($4):($5/1000000) title "libgit2" with points lt 2 pt 6 ps 2, \
+    'libgit2.dat' using ($3):($5/1000000) title "libgit2" with points lt 2 pt 6 ps 2, \
     f2(x) notitle lt 2 lw 3
