@@ -10,7 +10,17 @@ import (
 	"github.com/alcortesm/git-diff-tree-benchmarks/result"
 )
 
-type benchmark func(string) (*result.Result, error)
+type benchmarkFn func(string) (*result.Result, error)
+
+type run struct {
+	name string
+	do   benchmarkFn
+}
+
+var runs = []run{
+	{"libgit2", libgit2.Benchmark},
+	{"go-git", gogit.Benchmark},
+}
 
 func main() {
 	url, help, err := parseArgs()
@@ -25,19 +35,14 @@ func main() {
 		os.Exit(0)
 	}
 
-	implementations := map[string]benchmark{
-		"go-git":  gogit.Benchmark,
-		"libgit2": libgit2.Benchmark,
-	}
-
-	for name, benchmark := range implementations {
-		result, err := benchmark(url)
+	for _, r := range runs {
+		result, err := r.do(url)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 
-		if err := result.Report(name + ".dat"); err != nil {
+		if err := result.Report(r.name + ".dat"); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
