@@ -4,11 +4,14 @@ This tool benchmarks how long does it takes to calculate what files has changed
 between two git commits using different git implementations.  It generates
 reports and comes with a gnuplot script for easier visualization.
 
+The goal is get an idea about the algorithmic complexity of the different
+implementations.
+
 The benchmark is performed as follows:
 
 1. It generates a linear version of the history of a repository, going from the
    head up to the initial commit, choosing the first parent whenever it finds
-   a merge.  Think of these step as a `git rev-list --first-parent HEAD`.
+   a merge.  Think of this step as a `git rev-list --first-parent HEAD`.
 
 2. Measure the time to find out what files has changed between each commit and
    its parent.
