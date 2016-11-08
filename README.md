@@ -26,12 +26,9 @@ The benchmark is performed as follows:
   #
   # repository URL = git@github.com:alcortesm/git-diff-tree-benchmarks.git
   # date = 2016-11-08 10:58:39.362789734 +0100 CET
-  0000000000000000000000000000000000000000
-  c691e37fe800ff54e66b1f77b32f9f627112b91e         3         3           4514
-  c691e37fe800ff54e66b1f77b32f9f627112b91e
-  fd9403bf7aa36c9a8b46f0551ccb7f90dc98aca4         5         4          22474
-  fd9403bf7aa36c9a8b46f0551ccb7f90dc98aca4
-  2017ba5cec817db28ff649e64bb7deae45de9528         5         3          49581
+  0000000000000000000000000000000000000000 c691e37fe800ff54e66b1f77b32f9f627112b91e         3         3           4514
+  c691e37fe800ff54e66b1f77b32f9f627112b91e fd9403bf7aa36c9a8b46f0551ccb7f90dc98aca4         5         4          22474
+  fd9403bf7aa36c9a8b46f0551ccb7f90dc98aca4 2017ba5cec817db28ff649e64bb7deae45de9528         5         3          49581
   ```
 
   And store it in a file named after the git implementation used for the
