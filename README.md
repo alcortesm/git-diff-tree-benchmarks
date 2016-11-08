@@ -45,13 +45,14 @@ The `plot.gp` gnuplot script generates a graph to help visualizing the results.
 
 Download and install
 
-```
+```bash
 ; go get git@github.com:alcortesm/git-diff-tree-benchmarks.git
 ; go install github.com/alcortesm/git-diff-tree-benchmarks
 ```
 
 Benchmarks using data from the go-git repository (for example).
 
+```bash
 ; mkdir /tmp/benchmarks
 ; cd /tmp/benchmarks
 ;
