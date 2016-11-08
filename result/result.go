@@ -5,16 +5,14 @@ import (
 	"io"
 	"os"
 	"time"
-
-	"gopkg.in/src-d/go-git.v4/core"
 )
 
 // A duration value tell you how much did it took to calculate the
 // diff-tree of two commits, their hashes, and the number of files of
 // the one with more files.
 type Sample struct {
-	HashOld  core.Hash
-	HashNew  core.Hash
+	HashOld  string
+	HashNew  string
 	NFiles   int
 	NChanges int
 	Duration time.Duration

@@ -44,40 +44,34 @@ func downloadRepository(url string) (*git.Repository, error) {
 }
 
 func benchmarkAllCommits(r *git.Repository) ([]*result.Sample, error) {
-	commits, err := flatHistory(r)
+	history, err := flatHistory(r)
 	if err != nil {
 		return nil, err
 	}
 
-	ret := make([]*result.Sample, 0, len(commits)-1)
+	ret := make([]*result.Sample, 0, len(history)-1)
 
-	var parent *git.Commit
-	for _, c := range commits {
-		d, err := benchmarkDiffTree(parent, c)
+	for i := 0; i < len(history)-1; i++ {
+		new := history[i]
+		old := history[i+1]
+
+		sample, err := benchmarkDiffTree(old, new)
 		if err != nil {
-			if parent == nil {
-				return nil, fmt.Errorf(
-					"cannot benchmark diff tree between the empty repository and %s: %s",
-					c.Hash, err)
-			}
 			return nil, fmt.Errorf(
 				"cannot benchmark diff tree between %s and %s: %s",
-				parent.Hash, c.Hash, err)
+				old.Hash, new.Hash, err)
 		}
 
-		ret = append(ret, d)
-		parent = c
+		ret = append(ret, sample)
 	}
 
 	return ret, nil
 }
 
 // Returns a flat version of the commit history of a repository: the
-// first commit will be the initial commit, then the second commit, up
-// until the head.  When it founds a merge, it chooses the first parent.
+// first commit will be the head, up until the initial commit.
+// When it finds a merge, it chooses the first parent.
 func flatHistory(r *git.Repository) ([]*git.Commit, error) {
-	// the history is built from the head to the initial commit, going
-	// from parent to parent, we will reverse the history at the end.
 	headReference, err := r.Head()
 	if err != nil {
 		return nil, fmt.Errorf("cannot get the head: %s", err)
@@ -92,14 +86,10 @@ func flatHistory(r *git.Repository) ([]*git.Commit, error) {
 	var found bool
 	for {
 		ret = append(ret, current)
+
 		if current, found = getFirstParent(current); !found {
 			break
 		}
-	}
-
-	// reverse the history
-	for i := 0; i < (len(ret) / 2); i++ {
-		ret[i], ret[len(ret)-i-1] = ret[len(ret)-i-1], ret[i]
 	}
 
 	return ret, nil
@@ -162,8 +152,8 @@ func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
 	}
 
 	return &result.Sample{
-		HashOld:  hashOld,
-		HashNew:  n.Hash,
+		HashOld:  hashOld.String(),
+		HashNew:  n.Hash.String(),
 		NChanges: len(changes),
 		NFiles:   nFiles,
 		Duration: elapsed,
