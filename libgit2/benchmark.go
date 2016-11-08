@@ -151,11 +151,31 @@ func biggerNumberOfFiles(l ...*git.Tree) (int, error) {
 	max := 0
 
 	for _, t := range l {
-		n := int(t.EntryCount())
+		n, err := numberOfFiles(t)
+		if err != nil {
+			return 0, err
+		}
+
 		if n > max {
 			max = n
 		}
 	}
 
 	return max, nil
+}
+
+func numberOfFiles(t *git.Tree) (int, error) {
+	nFiles := 0
+	callback := func(s string, t *git.TreeEntry) int {
+		if t.Type == git.ObjectBlob {
+			nFiles++
+		}
+		return 0
+	}
+
+	if err := t.Walk(callback); err != nil {
+		return 0, nil
+	}
+
+	return nFiles, nil
 }
