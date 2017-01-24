@@ -66,7 +66,7 @@ Benchmarks using data from (for example) the go-git repository:
 ; ls
 go-git.dat  libgit2.dat
 ;
-; gnuplot $GOPATH/src/alcortesm/git-diff-tree-benchmarks/plot.gp
+; gnuplot $GOPATH/src/github.com/alcortesm/git-diff-tree-benchmarks/plot.gp
 ; file diff-tree-benchmark.png
 diff-tree-benchmark.png: PNG image data, 1500 x 900, 8-bit colormap, non-interlaced
 ```
