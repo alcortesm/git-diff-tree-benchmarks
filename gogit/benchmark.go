@@ -9,7 +9,9 @@ import (
 	"github.com/alcortesm/git-diff-tree-benchmarks/result"
 
 	git "gopkg.in/src-d/go-git.v4"
-	"gopkg.in/src-d/go-git.v4/core"
+	"gopkg.in/src-d/go-git.v4/plumbing"
+	"gopkg.in/src-d/go-git.v4/plumbing/difftree"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
 func Benchmark(url string) (*result.Result, error) {
@@ -71,7 +73,7 @@ func benchmarkAllCommits(r *git.Repository) ([]*result.Sample, error) {
 // Returns a flat version of the commit history of a repository: the
 // first commit will be the head, up until the initial commit.
 // When it finds a merge, it chooses the first parent.
-func flatHistory(r *git.Repository) ([]*git.Commit, error) {
+func flatHistory(r *git.Repository) ([]*object.Commit, error) {
 	headReference, err := r.Head()
 	if err != nil {
 		return nil, fmt.Errorf("cannot get the head: %s", err)
@@ -82,7 +84,7 @@ func flatHistory(r *git.Repository) ([]*git.Commit, error) {
 		return nil, fmt.Errorf("cannot get the head commit: %s", err)
 	}
 
-	var ret []*git.Commit
+	var ret []*object.Commit
 	var found bool
 	for {
 		ret = append(ret, current)
@@ -95,7 +97,7 @@ func flatHistory(r *git.Repository) ([]*git.Commit, error) {
 	return ret, nil
 }
 
-func getFirstParent(c *git.Commit) (*git.Commit, bool) {
+func getFirstParent(c *object.Commit) (*object.Commit, bool) {
 	if c.NumParents() == 0 {
 		return nil, false
 	}
@@ -113,8 +115,8 @@ func getFirstParent(c *git.Commit) (*git.Commit, bool) {
 
 // measures the time to compare the trees of two commits.
 // if the old commit is nil, the new is compared against an empty tree.
-func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
-	var ot *git.Tree
+func benchmarkDiffTree(o, n *object.Commit) (*result.Sample, error) {
+	var ot *object.Tree
 	var err error
 	if o != nil {
 		ot, err = o.Tree()
@@ -129,7 +131,7 @@ func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
 	}
 
 	start := time.Now()
-	changes, err := git.DiffTree(ot, nt)
+	changes, err := difftree.DiffTree(ot, nt)
 	elapsed := time.Since(start)
 
 	if err != nil {
@@ -141,7 +143,7 @@ func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
 			o.Hash, n.Hash, err)
 	}
 
-	hashOld := core.ZeroHash
+	hashOld := plumbing.ZeroHash
 	if o != nil {
 		hashOld = o.Hash
 	}
@@ -162,7 +164,7 @@ func benchmarkDiffTree(o, n *git.Commit) (*result.Sample, error) {
 
 // returns the number of files in the commit with more files.
 // nil commits are allowed and assumed to have 0 files.
-func biggerNumberOfFiles(l ...*git.Commit) (int, error) {
+func biggerNumberOfFiles(l ...*object.Commit) (int, error) {
 	max := 0
 
 	for _, c := range l {
@@ -183,7 +185,7 @@ func biggerNumberOfFiles(l ...*git.Commit) (int, error) {
 	return max, nil
 }
 
-func numberOfFiles(c *git.Commit) (int, error) {
+func numberOfFiles(c *object.Commit) (int, error) {
 	iter, err := c.Files()
 	if err != nil {
 		return 0, fmt.Errorf("cannot get files: %s", err)
