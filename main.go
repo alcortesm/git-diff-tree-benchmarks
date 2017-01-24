@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/alcortesm/git-diff-tree-benchmarks/gogit"
+	"github.com/alcortesm/git-diff-tree-benchmarks/gogitdev"
 	"github.com/alcortesm/git-diff-tree-benchmarks/libgit2"
 	"github.com/alcortesm/git-diff-tree-benchmarks/result"
 )
@@ -20,6 +21,7 @@ type run struct {
 var runs = []run{
 	{"libgit2", libgit2.Benchmark},
 	{"go-git", gogit.Benchmark},
+	{"go-git-dev", gogitdev.Benchmark},
 }
 
 func main() {
